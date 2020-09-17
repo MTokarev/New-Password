@@ -24,8 +24,6 @@ ReturnAsSecureString
 
 ### Examples
 ```csharp
-C:\PS> extension -name "File"
-File.txt
 
 C:\PS> New-Password
 zSex0=vp
