@@ -1,11 +1,4 @@
 function New-Password{
-    param(
-        [int]$MinLowerChars = 5,
-        [int]$MinUpperChars = 1,
-        [int]$MinSpecialChars = 1,
-        [int]$MinDigits = 1,
-        [switch]$ReturnAsSecureString
-    )
 
     <#
         .SYNOPSIS
@@ -46,6 +39,14 @@ function New-Password{
         System.Security.SecureString
 
     #>
+
+    param(
+        [int]$MinLowerChars = 5,
+        [int]$MinUpperChars = 1,
+        [int]$MinSpecialChars = 1,
+        [int]$MinDigits = 1,
+        [switch]$ReturnAsSecureString
+    )
 
     #This array will have all types that were requested by script params
     $resultArray = @()
