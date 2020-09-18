@@ -36,4 +36,6 @@ C:\PS> New-Password -MinLowerChars 5 -MinUpperChars 1 -MinSpecialChars 4
 
 C:\PS> New-Password -MinLowerChars 5 -MinUpperChars 1 -MinSpecialChars 4 -ReturnAsSecureString
 System.Security.SecureString
-```     
+```
+
+TODO: Handle if some chars are set to 0
