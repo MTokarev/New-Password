@@ -2,7 +2,8 @@ function New-Password{
     param(
         [int]$MinLowerChars = 5,
         [int]$MinUpperChars = 1,
-        [int]$MinSpecialChars = 2,
+        [int]$MinSpecialChars = 1,
+        [int]$MinDigits = 1,
         [int]$PasswordLength = 8,
         [switch]$ReturnAsSecureString
     )
@@ -25,7 +26,7 @@ function New-Password{
 
         .PARAMETER PasswordLength
         (Default = 8)Specify password length.
-        
+
         .PARAMETER ReturnAsSecureString
         (Default = false)Return password as secure string. By default returns plain password.
 
@@ -48,32 +49,40 @@ function New-Password{
         .EXAMPLE
         C:\PS> New-Password -MinLowerChars 5 -MinUpperChars 1 -MinSpecialChars 4 -ReturnAsSecureString
         System.Security.SecureString
-        
+
     #>
 
     $lower = @("a","b","c","d","e","f","g","h","i","k","l","m","n","o","p","r","s","t","u","v","w","x","y","z")
     $upper = @("A","B","C","D","E","F","G","H","K","L","M","N","O","P","R","S","T","U","V","W","X","Y","Z")
-    $charsAndInts = @("1","2","3","4","5","6","7","8","9","0","!",'"',"$","%","&","/","(",")","=","?","}","]","[","{","@","#","*","+")
+    $specialChars = @("!",'"',"$","%","&","/","(",")","=","?","}","]","[","{","@","#","*","+")
+    $ints = @("1","2","3","4","5","6","7","8","9","0")
 
-    #Getting length for summ of all mimnimal chars  
-    $length = $MinLowerChars + $MinUpperChars + $MinSpecialChars
+    #Getting length for summ of all mimnimal chars
+    $length = $MinLowerChars + $MinUpperChars + $MinSpecialChars + $MinDigits
 
     #If actual length less that requested then increase lowercase to match PasswordLength
-    if($length -lt $PasswordLength){
-        $deltalength = $PasswordLength - $length
+    if($length -gt $PasswordLength){
+        Write-Host -ForegroundColor Yellow "Current password length couldn't fit requested password." `
+            "extending to include minimum:" `
+            "`n'lower - $MinLowerChars'" `
+            "`n'upper - $MinUpperChars'" `
+            "`n'special chars - $MinSpecialChars'" `
+            "`n'digits - $MinDigits'"`
+            "`n'total length - $length'`n" -Separator ""
+        $deltalength = $length - $PasswordLength
         $MinLowerChars += $deltalength
     }
 
     #Merging arrays
-    $resultArray = ($lower | Get-Random -Count $MinLowerChars ) + ($upper | Get-Random -Count $MinUpperChars) + `
-        ($charsAndInts | Get-Random -Count $MinSpecialChars)
+    $resultArray = ($lower | Get-Random -Count $MinLowerChars) + ($upper | Get-Random -Count $MinUpperChars) + `
+        ($specialChars | Get-Random -Count $MinSpecialChars) + ($ints | Get-Random -Count $MinDigits)
 
     #Shuffling array
     $resultArray = $resultArray | Sort-Object {Get-Random}
 
     #Constructing string
     $resultStr = $resultArray -join ""
-    
+
     if($ReturnAsSecureString){
         return ($resultStr | ConvertTo-SecureString -AsPlainText -Force)
     }else{
