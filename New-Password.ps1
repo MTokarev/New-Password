@@ -54,7 +54,7 @@ function New-Password{
     #Initialize array
     $db = @(
         @("a","b","c","d","e","f","g","h","i","k","l","m","n","o","p","r","s","t","u","v","w","x","y","z"),
-        @("A","B","C","D","E","F","G","H","K","L","M","N","O","P","R","S","T","U","V","W","X","Y","Z"),
+        @("A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","R","S","T","U","V","W","X","Y","Z"),
         @("!",'"',"$","%","&","/","(",")","=","?","}","]","[","{","@","#","*","+"),
         @("1","2","3","4","5","6","7","8","9","0")
     )
@@ -68,7 +68,13 @@ function New-Password{
 
     #Merging arrays
     For($i = 0; $i -lt $db.Length; $i++ ) {
+        #If we have at least one symbol requested
         if($minParamArray[$i]){
+            #Handling case when requested symbols could be greater that we have
+            if($minParamArray[$i] -gt $db[$i].Count){
+                $multilpeBy = [System.Math]::Ceiling($minParamArray[$i] / $db[$i].Count)
+                $db[$i] *= $multilpeBy
+            }
             $resultArray += $db[$i] | Get-Random -Count $minParamArray[$i]
         }
     }
